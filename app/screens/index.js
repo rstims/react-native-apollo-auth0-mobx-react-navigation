@@ -31,8 +31,8 @@ class Drawer extends Component {
   render() {
     const { navigation, navigationStore } = this.props;
 
-    const NavigateHome        = NavigationActions.navigate({routeName:'Home'});
-    const NavigateLogin       = NavigationActions.navigate({routeName:'Login'});
+    const NavigateHome   = NavigationActions.navigate({routeName:'Home'});
+    const NavigateLogin  = NavigationActions.navigate({routeName:'Login'});
 
     return (
       <View style={styles.drawer}>
@@ -41,9 +41,14 @@ class Drawer extends Component {
           </View>
           <ScrollView>
             <TouchableOpacity
-              onPress={() => navigationStore.dispatch(NavigationActions.navigate({routeName:'DrawerClose', actions: NavigateHome}))}
+              onPress={() => navigationStore.dispatch(NavigateHome)}
               style={[styles.drawerItem, (navigation.state.index === 0 && _.get(navigation,"state.routes[0].routes[0].index","") === 1) ? {backgroundColor: 'black'} : null]}>
               <Text style={styles.drawerText}>Home</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigationStore.dispatch(NavigateLogin)}
+              style={[styles.drawerItem, (navigation.state.index === 0 && _.get(navigation,"state.routes[0].routes[0].index","") === 1) ? {backgroundColor: 'black'} : null]}>
+              <Text style={styles.drawerText}>Login</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -134,18 +139,19 @@ export default (initialRouteName = 'Home') => {
       @observable.ref navigationState = DrawerNav.router.getStateForAction(DrawerNav.router.getActionForPathAndParams('Login'));
 
       @action dispatch = (action) => {
-        const newState = DrawerNav.router.getStateForAction(action);
-        const routes = newState.routes;
 
-        if(action.routeName !== 'DrawerClose'){
+        const newState = DrawerNav.router.getStateForAction(action);
+        const routes   = newState.routes;
+
+        if(['DrawerOpen','DrawerClose'].indexOf(action.routeName) > -1){
           routes[0] = this.navigationState.routes[0]; 
-        }
+        } 
 
         const state = {
           index: newState.index,
           routes,
         };
-        
+
         return (this.navigationState = state);
       }
     }

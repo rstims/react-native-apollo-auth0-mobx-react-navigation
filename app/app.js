@@ -33,6 +33,7 @@ class App extends Component{
 
   constructor(props) {
     super(props);
+
     // this.socket = SocketIOClient('http://localhost:3000');
 
     // LocationObserver.requestAuthorization();

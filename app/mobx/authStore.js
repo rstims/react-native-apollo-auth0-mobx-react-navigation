@@ -12,7 +12,7 @@ class ObservableAuthStore {
 
   @action loginUser = (username, password) => {
 
-    commonStore.setLoading(true);
+    commonStore.setLoading(true, 'Accessing user...');
 
     let chain = Bluebird.resolve();
 

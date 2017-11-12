@@ -53,29 +53,22 @@ class App extends Component{
   render() {
     const { DrawerNavigator, navigationStore, commonStore } = this.props;
 
-    // const isLoading = Store.state.isLoading;
-    const loadingText = 'Loading' 
-
-    // console.log("isLoading: %s", isLoading);
+    const loadingText = commonStore.loadingText; 
 
     const spinnerProps = {
       overlayColor: secondary,  
       textContent: loadingText,
       textStyle: {color: '#fff'}
     };
-    // console.log(addNavigationHelpers({
-              // dispatch: navigationStore.dispatch,
-              // state: navigationStore.navigationState
-            // }));
-            // return null;
+
     return (
       <View style={styles.container}>
-        {!false && <DrawerNavigator
-            navigation={addNavigationHelpers({
-              dispatch: navigationStore.dispatch,
-              state: navigationStore.navigationState
-            })} 
-          />}
+        <DrawerNavigator
+           navigation={addNavigationHelpers({
+             dispatch: navigationStore.dispatch,
+             state: navigationStore.navigationState
+           })} 
+        />
         <Spinner visible={commonStore.isLoading} {...spinnerProps}/>
       </View>
     );

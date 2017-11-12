@@ -4,9 +4,15 @@ import {observable, action} from 'mobx';
 class ObservableCommonStore {
 
   @observable isLoading = false
+  @observable loadingText = 'Loading...'
 
-  @action setLoading(loadingState) {
-    this.isLoading = loadingState; 
+  @action setLoading(loadingState, loadingText = 'Loading...') {
+    this.loadingText = loadingText; 
+    this.isLoading   = loadingState; 
+  }
+
+  @action setLoadingText() {
+    this.isLoading   = loadingState; 
   }
 
 }

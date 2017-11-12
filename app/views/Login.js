@@ -21,9 +21,9 @@ export default class LoginView extends Component {
     render() {
       let form;
       if (this.props.viewLogin) {
-        form = <LoginForm realmLogin={() => true} />;
+        form = <LoginForm realmLogin={this.props.onAuth} />;
       } else {
-        form = <RegistrationForm createUser={() => true} />;
+        form = <RegistrationForm createUser={this.props.onAuth} />;
       }
 
       return (

@@ -51,7 +51,7 @@ class App extends Component{
   }
 
   render() {
-    const { DrawerNavigator, navigationStore } = this.props;
+    const { DrawerNavigator, navigationStore, commonStore } = this.props;
 
     // const isLoading = Store.state.isLoading;
     const loadingText = 'Loading' 
@@ -76,7 +76,7 @@ class App extends Component{
               state: navigationStore.navigationState
             })} 
           />}
-        <Spinner visible={false} {...spinnerProps}/>
+        <Spinner visible={commonStore.isLoading} {...spinnerProps}/>
       </View>
     );
   }

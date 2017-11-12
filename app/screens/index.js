@@ -20,7 +20,7 @@ import EStyleSheet             from 'react-native-extended-stylesheet';
 import { inject, observer }    from 'mobx-react';
 import { observable, action }  from 'mobx';
 
-@inject("navigationStore")
+@inject("navigationStore", "authStore")
 @observer
 class Drawer extends Component {
 
@@ -29,7 +29,7 @@ class Drawer extends Component {
   }
 
   render() {
-    const { navigation, navigationStore } = this.props;
+    const { navigation, navigationStore, authStore } = this.props;
 
     const NavigateHome   = NavigationActions.navigate({routeName:'Home'});
     const NavigateLogin  = NavigationActions.navigate({routeName:'Login'});
@@ -42,20 +42,15 @@ class Drawer extends Component {
           <ScrollView>
             <TouchableOpacity
               onPress={() => navigationStore.dispatch(NavigateHome)}
-              style={[styles.drawerItem, (navigation.state.index === 0 && _.get(navigation,"state.routes[0].routes[0].index","") === 1) ? {backgroundColor: 'black'} : null]}>
+              style={[styles.drawerItem, (navigation.state.index === 0 && _.get(navigation,"state.routes[0].routes[0].index","") === 0) ? {backgroundColor: 'black'} : null]}>
               <Text style={styles.drawerText}>Home</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigationStore.dispatch(NavigateLogin)}
-              style={[styles.drawerItem, (navigation.state.index === 0 && _.get(navigation,"state.routes[0].routes[0].index","") === 1) ? {backgroundColor: 'black'} : null]}>
-              <Text style={styles.drawerText}>Login</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
         <TouchableOpacity
           style={styles.footer}
-          onPress={() => navigation.state.index === 1 ? navigation.navigate('DrawerClose') : navigation.navigate(true ? 'Home' : 'Login')} >
-          <Text style={styles.drawerText}>{true ? 'Logout' : 'Login'}</Text>
+          onPress={() => navigationStore.dispatch(authStore.isAuthenticated ? NavigateLogin : NavigateLogin)} >
+          <Text style={styles.drawerText}>{authStore.isAuthenticated ? 'Logout' : 'Login'}</Text>
           <Ionicons
             name='md-exit'
             size={22}
@@ -98,19 +93,19 @@ const styles = EStyleSheet.create({
     shadowOpacity: .7,
     marginBottom: 8,
     elevation: 10
-    },
-    logo: {
-      height: 60,
-      width: 200,
-      alignSelf: 'center',
-      marginVertical: 10,
-    },
-    footer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: 20,
-    }
+  },
+  logo: {
+    height: 60,
+    width: 200,
+    alignSelf: 'center',
+    marginVertical: 10,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  }
 })
 
 
@@ -130,34 +125,34 @@ export default (initialRouteName = 'Home') => {
     drawerWidth: 200,
     drawerBackgroundColor: 'blue',
     contentComponent: Drawer,
-    };
-    
-    const DrawerNav = DrawerNavigator(screens, config);
+  };
 
-    class ObservableNavigationStore {
+  const DrawerNav = DrawerNavigator(screens, config);
 
-      @observable.ref navigationState = DrawerNav.router.getStateForAction(DrawerNav.router.getActionForPathAndParams('Login'));
+  class ObservableNavigationStore {
 
-      @action dispatch = (action) => {
+    @observable.ref navigationState = DrawerNav.router.getStateForAction(DrawerNav.router.getActionForPathAndParams('Login'));
 
-        const newState = DrawerNav.router.getStateForAction(action);
-        const routes   = newState.routes;
+    @action dispatch = (action) => {
 
-        if(['DrawerOpen','DrawerClose'].indexOf(action.routeName) > -1){
-          routes[0] = this.navigationState.routes[0]; 
-        } 
+      const newState = DrawerNav.router.getStateForAction(action);
+      const routes   = newState.routes;
 
-        const state = {
-          index: newState.index,
-          routes,
-        };
+      if(['DrawerOpen','DrawerClose'].indexOf(action.routeName) > -1){
+        routes[0] = this.navigationState.routes[0]; 
+      } 
 
-        return (this.navigationState = state);
-      }
+      const state = {
+        index: newState.index,
+        routes,
+      };
+
+      return (this.navigationState = state);
     }
+  }
 
-    return {
-      DrawerNavigator: DrawerNav,
-      navigationStore: new ObservableNavigationStore(),
-    } 
+  return {
+    DrawerNavigator: DrawerNav,
+    navigationStore: new ObservableNavigationStore(),
+  } 
 }

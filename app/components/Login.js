@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { observer }         from 'mobx-react/native'
+import { observer, inject } from 'mobx-react'
 import navigation           from './Navigation';
 import LoginView            from '../views/Login';
 
+@inject("authStore")
 @observer
 class Login extends Component {
 
@@ -12,17 +13,15 @@ class Login extends Component {
 
     toggleLoginRegister = () => this.setState({viewLogin: !this.state.viewLogin})
 
-    onAuth = (credentials, profile) => {
-      console.log(credentials);
-      console.log(profile);
-    }
-
     render() {
+
+      const { authStore } = this.props;
+
       return (
         <LoginView
           toggleLoginRegister={this.toggleLoginRegister}
           viewLogin={this.state.viewLogin}
-          onAuth={this.onAuth}
+          onAuth={authStore.loginUser}
         />
       );
     }

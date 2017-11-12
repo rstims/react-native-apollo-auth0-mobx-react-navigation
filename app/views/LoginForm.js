@@ -11,11 +11,15 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 export default class LoginForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { username: "ryan@redorangedesign.com", password: "24302430aA!", usernameError: false, passwordError: false }
+    this.state = { 
+      username: "ryan@redorangedesign.com", 
+      password: "24302430aA!", 
+      usernameError: false, 
+      passwordError: false 
+    };
   }
 
   validateLogin = () => {
-
     usernameError = false
     passwordError = false
 
@@ -28,7 +32,7 @@ export default class LoginForm extends Component {
 
     this.setState({usernameError: usernameError, passwordError: passwordError})
     if (usernameError === false && passwordError === false) {
-      return this.props.realmLogin({username: this.state.username, password: this.state.password})
+      return this.props.realmLogin(this.state.username, this.state.password)
     }
   }
 
